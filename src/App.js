@@ -5,10 +5,12 @@ import Offer from "./pages/Offer.jsx";
 import Profile from "./pages/Profile.jsx";
 import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
+import Header from "./component/Header.jsx";
 
 function App() {
   return (
     <>
+      <Header />
       <Routes>
         <Route path="/" element={<Home />}></Route>
         <Route path="/offer" element={<Offer />}></Route>
@@ -20,4 +22,5 @@ function App() {
     </>
   );
 }
+
 export default App;
