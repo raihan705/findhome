@@ -23,11 +23,12 @@ export default function GoogleAuth() {
           timestamp: serverTimestamp(),
         });
       }
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
   };
-  navigate("/sign-in");
+
   return (
     <button
       type="button"
