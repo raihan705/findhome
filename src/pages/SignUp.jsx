@@ -3,20 +3,52 @@ import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import GoogleAuth from "../component/GoogleAuth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { db } from "../firebase.config.js";
+import { serverTimestamp, setDoc, doc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formdata, setFormData] = useState({
     fullname: "",
     email: "",
     password: "",
   });
-
+  // for geeting the value from each tect input
   const onchange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
       [e.target.id]: e.target.value,
     }));
+  };
+  // dealing with form for inserting data to database for signup data
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      const userAuthenticationData = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userAuthenticationData.user;
+      updateProfile(auth.currentUser, {
+        displayName: fullname,
+      });
+      const cloneFormDataForStorage = { ...formdata };
+      delete cloneFormDataForStorage.password;
+      cloneFormDataForStorage.timestamp = serverTimestamp();
+      await setDoc(doc(db, "users", user.uid), cloneFormDataForStorage);
+      navigate("/sign-in");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const { fullname, email, password } = formdata;
@@ -35,7 +67,7 @@ export default function SignUp() {
           />
         </div>
         <div className="w-full md:w-[70%] lg:w-[40%] lg:ml-20">
-          <form action="">
+          <form onSubmit={onSubmit}>
             <input
               type="text"
               id="fullname"
