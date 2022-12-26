@@ -1,3 +1,4 @@
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -8,6 +9,18 @@ export default function ForgetPassword() {
 
   const onchange = (e) => {
     setEmail(e.target.value);
+  };
+
+  // Reset password using email functionality
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      await sendPasswordResetEmail(auth, email);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -27,7 +40,7 @@ export default function ForgetPassword() {
           />
         </div>
         <div className="w-full md:w-[70%] lg:w-[40%] lg:ml-20">
-          <form action="">
+          <form onSubmit={onSubmit}>
             <input
               type="email"
               id="email"
