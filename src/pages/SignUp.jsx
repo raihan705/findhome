@@ -13,21 +13,23 @@ import { serverTimestamp, setDoc, doc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
+  // navigate the site url use this method
   const navigate = useNavigate();
+  // For state management
   const [showPassword, setShowPassword] = useState(false);
   const [formdata, setFormData] = useState({
     fullname: "",
     email: "",
     password: "",
   });
-  // for geeting the value from each tect input
+  // for geeting the value from each text input
   const onchange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
       [e.target.id]: e.target.value,
     }));
   };
-  // dealing with form for inserting data to database for signup data
+  // dealing with form for inserting data to database for signup data using email and password method for firebase
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -38,12 +40,16 @@ export default function SignUp() {
         password
       );
       const user = userAuthenticationData.user;
+      // Add fullname field to the method
       updateProfile(auth.currentUser, {
         displayName: fullname,
       });
+
+      // Delete password and save data to users collection on firebase
       const cloneFormDataForStorage = { ...formdata };
       delete cloneFormDataForStorage.password;
       cloneFormDataForStorage.timestamp = serverTimestamp();
+      // Save data to users collection on firebase
       await setDoc(doc(db, "users", user.uid), cloneFormDataForStorage);
       navigate("/sign-in");
     } catch (error) {
