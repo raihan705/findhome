@@ -2,8 +2,9 @@ import { getAuth, updateProfile } from "firebase/auth";
 import { updateDoc, doc } from "firebase/firestore";
 import React from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { db } from "../firebase.config";
+import { AiFillHome } from "react-icons/ai";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -95,6 +96,19 @@ export default function Profile() {
               </p>
             </div>
           </form>
+
+          <button
+            type="button"
+            className=" w-full bg-teal-600 px-6 py-2 mt-6 font-medium text-sm uppercase rounded shadow-md hover:bg-teal-700 transition duration-200 ease-in-out"
+          >
+            <Link
+              to="/create-list"
+              className="flex items-center justify-center"
+            >
+              <AiFillHome className="mr-4 text-2xl rounded-full" />
+              Rent or Sell Home
+            </Link>
+          </button>
         </div>
       </div>
     </>

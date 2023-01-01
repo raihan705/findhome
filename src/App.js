@@ -7,6 +7,7 @@ import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Header from "./component/Header.jsx";
 import PrivateRoute from "./component/PrivateRoute.jsx";
+import CreateList from "./pages/CreateList.jsx";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/sign-in" element={<SignIn />}></Route>
         <Route path="/sign-up" element={<SignUp />}></Route>
         <Route path="/forget-password" element={<ForgetPassword />}></Route>
+        <Route path="/create-list" element={<CreateList />}></Route>
       </Routes>
     </>
   );
