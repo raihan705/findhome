@@ -14,10 +14,10 @@ function App() {
     <>
       <Header />
       <Routes>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/offer" element={<Offer />}></Route>
-        <Route path="/profile" element={<PrivateRoute />}>
-          <Route path="/profile" element={<Profile />}></Route>
+        {/*<Route path="/" element={<Home />}></Route>
+  <Route path="/offer" element={<Offer />}></Route>*/}
+        <Route path="/" element={<PrivateRoute />}>
+          <Route path="/" element={<Profile />}></Route>
         </Route>
         <Route path="/sign-in" element={<SignIn />}></Route>
         <Route path="/sign-up" element={<SignUp />}></Route>

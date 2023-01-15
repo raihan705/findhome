@@ -1,21 +1,40 @@
 import { getAuth, updateProfile } from "firebase/auth";
-import { updateDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import React from "react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { db } from "../firebase.config";
 import { AiFillHome } from "react-icons/ai";
+import { useEffect } from "react";
+import SingleHomeShowCard from "../component/SingleHomeShowCard";
 
 export default function Profile() {
   const navigate = useNavigate();
   const auth = getAuth();
+  //state getting data from getAuth() from firebase
   const [formData, setFormData] = useState({
     name: auth.currentUser.displayName,
     email: auth.currentUser.email,
   });
 
-  //state change for edit
+  //state change for profile edit
   const [editCahnge, setEditChange] = useState(false);
+
+  //sate change data for show home list view that collect from database
+  const [homeData, setHomeData] = useState(null);
+
+  //data loading true false
+
+  const [loading, setLoading] = useState(true);
 
   // Change input field functionality
 
@@ -52,6 +71,34 @@ export default function Profile() {
     auth.signOut();
     navigate("/");
   };
+
+  //Functionality for getting data from firebase to create a list to show here
+
+  useEffect(() => {
+    const fetchHomeListData = async () => {
+      const collectLoginUserHomeListData = collection(db, "listings");
+      const queryData = query(
+        collectLoginUserHomeListData,
+        where("userRef", "==", auth.currentUser.uid),
+        orderBy("created_at", "desc")
+      );
+
+      const querySnap = await getDocs(queryData);
+      // store collecting data to an array
+      let homeData = [];
+      querySnap.forEach((doc) => {
+        return homeData.push({
+          id: doc.id,
+          data: doc.data(),
+        });
+      });
+      setHomeData(homeData);
+      setLoading(false);
+    };
+
+    //call the async function after collecting data
+    fetchHomeListData();
+  }, [auth.currentUser.uid]);
 
   const { name, email } = formData;
   return (
@@ -109,6 +156,25 @@ export default function Profile() {
               Rent or Sell Home
             </Link>
           </button>
+        </div>
+        {/* Show data that collect from firebase */}
+        <div className="max-w-6xl px-3 mt-6 mx-auto">
+          {!loading && homeData.length > 0 && (
+            <>
+              <h2 className="text-2xl text-center font-semibold mb-6">
+                My Listings
+              </h2>
+              <div>
+                {homeData.map((listing) => (
+                  <SingleHomeShowCard
+                    key={listing.id}
+                    id={listing.id}
+                    homeItem={listing.data}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>
